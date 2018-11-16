@@ -1,5 +1,6 @@
 import sys
 import os
+import send_cmd
 
 def get_hid():
     os.system("dmesg > hidnum.txt")
@@ -10,13 +11,15 @@ def get_hid():
 
     for line in infile:
         if (vid in line) and (pid in line) and (hid in line):
-            print line
+            #print line
             hid_pos = line.find('hidraw') + 6
             line[hid_pos]
             while line[hid_pos]!= ':':
                 hid = hid + line[hid_pos]
                 hid_pos = hid_pos + 1
+
     infile.close()
     os.system('rm hidnum.txt')
-    print hid
+    #print hid
+    send_cmd.send_cmd('QPIGS', hid)     #first response will be NAK/ACK
     return hid

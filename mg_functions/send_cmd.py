@@ -43,4 +43,5 @@ def send_cmd(encoded_cmd, hidnum):
     finally:
         os.close(fd)
 
+    response = [1:]
     return response
