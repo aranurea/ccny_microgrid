@@ -1,14 +1,13 @@
 def status_parse(response):
     values = list(response.split())
-    values[0][0] = ""
 
     return values
 
 def out_priority_parse(response):
-    if (response[1:3] != "ACK"):
-        return 0
+    if (response[:2] != "ACK"):
+        return "Priority Changed"
     else:
-        return 1
+        return "Priority NOT Changed"
 
 def flag_parse(response):
     response[:12]
