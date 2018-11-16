@@ -61,3 +61,16 @@ def flag_parse(response):
                 print "Data log pop-up"
             j += 1
         exit
+
+def mode_parse(response):
+    if response[0] is "P":
+
+    if response[0] is "S":
+
+    if response[0] is "L":
+
+    if response[0] is "B":
+
+    if response[0] is "F":
+
+    if response[0] is "H":
