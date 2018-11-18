@@ -6,7 +6,6 @@ from crc16 import crc16xmodem
 from struct import pack
 from traceback import format_exc
 
-#encoded_cmd = 'QPIGS'
 def send_cmd(encoded_cmd, hidnum):
 
     checksum = crc16xmodem(encoded_cmd)
@@ -15,14 +14,14 @@ def send_cmd(encoded_cmd, hidnum):
 
     fd = os.open('/dev/'+ hidnum,  os.O_RDWR|os.O_NONBLOCK)
     try:
-        #time.sleep(.5)
+        #time.sleep(.125)
 
         os.write(fd, request[:8])
         if len(request) > 8:
             os.write(fd, request[8:])
 
         #print('Write done')
-        #time.sleep(.5)
+        time.sleep(.5)
 
         response = ''
         try:
@@ -42,6 +41,10 @@ def send_cmd(encoded_cmd, hidnum):
 
     finally:
         os.close(fd)
-
-    response = [1:]
+    if len(response) > 1:
+        response = response[1:]
     return response
+
+#encoded_cmd = 'QFLAG'
+#print send_cmd(encoded_cmd, "hidraw6")
+
