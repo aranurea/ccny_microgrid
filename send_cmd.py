@@ -45,6 +45,6 @@ def send_cmd(encoded_cmd, hidnum):
         response = response[1:]
     return response
 
-#encoded_cmd = 'QFLAG'
-#print send_cmd(encoded_cmd, "hidraw6")
+encoded_cmd = 'POP00'
+print send_cmd(encoded_cmd, "hidraw6")
 
