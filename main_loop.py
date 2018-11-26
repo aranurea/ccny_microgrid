@@ -4,23 +4,29 @@ import time
 import send_cmd
 import cmd_handling
 import get_hid
+import threading
 
 hid = get_hid.get_hid()
+
+#if get_hid returns no valid hidraw device number
+#ask for one every 10 seconds for 10 minutes
+if hid == 'hidraw':
+    for x in range(60):
+        hid = get_hid.get_hid()
+        time.sleep(10)
+        if hid != 'hidraw':
+            break
 #ERASE_LINE = '\x1b[2K'
 #print ERASE_LINE
 
 def status_thread():
     #req_status = send_cmd.send_cmd('QPIGS', hid)
-    fpid = os.fork()
-    if fpid!=0:
-        # Running as daemon now. PID is fpid
-        sys.exit(0)
     while 1:
         outfile = open('log.txt', 'a')
         response = ''
         array = ''
-        #os.system('clear')
-        #sys.stdout.flush()
+        ###os.system('clear')
+        ###sys.stdout.flush()
         response = send_cmd.send_cmd('QPIGS', hid)
         array = cmd_handling.status_parse(response)
 
@@ -32,5 +38,10 @@ def status_thread():
 
         #close file after writing to it, print values to screen, sleep for 1 second
         outfile.close()
-        #print ERASE_LINE + 'Grid Voltage: ' + array[0] + '\r',
+        ###print ERASE_LINE + 'Grid Voltage: ' + array[0] + '\r',
         time.sleep(1)
+
+#start status_thread as daemon to query inverter every 1 second
+main_thread = threading.Thread(status_thread)
+main_thread.daemon = True
+main_thread.start
