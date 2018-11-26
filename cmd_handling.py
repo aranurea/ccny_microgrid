@@ -1,7 +1,3 @@
-def status_parse(response):
-    values = list(response.split())
-    return values
-
 def out_priority_parse(response):
     if (response[:2] == 'ACK'):
         return 0
@@ -33,7 +29,7 @@ def enable_disable(response):
         return 'Data log pop-up'
 
 def flag_parse(response):
-    response[:11]
+    response[:12]
     if response[0] is 'E':
         print '\nEnabled:'
         j = 1
@@ -49,9 +45,7 @@ def flag_parse(response):
         exit
 
 def mode_parse(response):
-
     print 'Current Mode:',
-
     if response[0] is 'P':
         print 'Power On'
     if response[0] is 'S':

@@ -12,7 +12,13 @@ def send_cmd(encoded_cmd, hidnum):
     request = encoded_cmd + pack('>H', checksum) + '\r'
 
 
-    fd = os.open('/dev/'+ hidnum,  os.O_RDWR|os.O_NONBLOCK)
+    try:
+        fd = os.open('/dev/'+ hidnum,  os.O_RDWR|os.O_NONBLOCK)
+    except:
+        response = 'NAK Device not connected'
+        print response[4:]
+        return response
+    
     try:
         #time.sleep(.125)
 
@@ -32,19 +38,20 @@ def send_cmd(encoded_cmd, hidnum):
                 response += chunk
         except:
             pass
-
-        #print('Response from axpert:')
-        #print(response)
-
     except Exception as e:
         print(format_exc(e))
-
     finally:
         os.close(fd)
-    if len(response) > 1:
+        
+    try:
         response = response[1:]
-    return response
+    except:
+        response = 'NAK Response not assigned'
+        print response[4:]
+        return response
+    finally:
+        return response
 
-encoded_cmd = 'POP00'
-print send_cmd(encoded_cmd, "hidraw6")
+#encoded_cmd = 'POP00'
+#print send_cmd(encoded_cmd, "hidraw6")
 
