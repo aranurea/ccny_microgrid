@@ -18,7 +18,7 @@ def get_hid():
             if (vid in line) and (pid in line) and (hid in line):
                 hid_pos = line.find('hidraw') + 6
                 while line[hid_pos]!= ':':
-                    hidnum = hid + line[hid_pos]
+                    hid += line[hid_pos]
                     hid_pos += 1
                 break
 
@@ -28,4 +28,4 @@ def get_hid():
         print 'Device not found. Retry in 60 seconds.'
         time.sleep(60)
 
-    return hidnum
+    return hid
