@@ -5,20 +5,28 @@ import send_cmd
 import cmd_handling
 import get_hid
 import threading
+import client
 
 #manual_cmd holds user cmds for execution
 manual_cmd = ''
+server_cmd = ''
 #flasg for manual command execution
-cmd_flag = 0
+m_cmd_flag = 0
+s_cmd_flag = 0
 
 hid = get_hid.get_hid()
 
+manual_response = ''
+server_response = ''
+
 def status_thread():
-    global cmd_flag
+    global m_cmd_flag
+    global s_cmd_flag
     global manual_cmd
+    global manual_response
     #req_status = send_cmd.send_cmd('QPIGS', hid)
     while 1:
-        outfile = open('log.txt', 'a')
+        outfile = open('measurements.txt', 'a')
         response = ''
         array = ''
         ###os.system('clear')
@@ -42,27 +50,42 @@ def status_thread():
         outfile.close()
         time.sleep(.5)
 
-        if cmd_flag is 1:
-            response = send_cmd.send_cmd(manual_cmd, hid)
-            
+        if m_cmd_flag is 1:
+            manual_response = send_cmd.send_cmd(manual_cmd, hid)
             manual_cmd = ''
-            cmd_flag = 0
+            m_cmd_flag = 0
+
+        if s_cmd_flag is 1:
+            manual_response = send_cmd.send_cmd(manual_cmd, hid)
+            server_cmd = ''
+            s_cmd_flag = 0
 
 #start status_thread as daemon to query inverter every 1 second
 
 def manual_cmd_input():
-    global cmd_flag
+    global m_cmd_flag
     global manual_cmd
     while 1:
         if cmd_flag is 0:
             print ('What command would you like to run?')
             manual_cmd = raw_input()
-            cmd_flag = 1
+            m_cmd_flag = 1
 
+def server_cmd_input():
+    global s_cmd_flag
+    global server_cmd
+    client.client_connect()
+    while 1:
+        if s_cmd_flag is 0:
+            server_cmd = client.client()
+            s_cmd_flag = 1
 
 main_thread = threading.Thread(target = status_thread)
 cmd_thread = threading.Thread(target = manual_cmd_input)
+server_thread = threading.Thread(target = server_cmd_input)
 main_thread.start()
-print 'Main thread started'
+print 'Main thread started.'
 cmd_thread.start()
-print 'Secondary thread started'
+print 'Secondary thread started.'
+server_thread.start()
+print 'Server thread started.'
