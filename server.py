@@ -17,7 +17,7 @@ class server(Thread):
 
     def run(self):
         while 1:
-            cmd = raw_input('Enter commannd: ')
+            cmd = raw_input('Enter command: ')
             self.sock.send(cmd)
 
 serversocket.listen(1)
