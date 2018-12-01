@@ -10,6 +10,7 @@ import client
 #manual_cmd holds user cmds for execution
 manual_cmd = ''
 server_cmd = ''
+utf_cmd = ''
 #flasg for manual command execution
 m_cmd_flag = 0
 s_cmd_flag = 0
@@ -24,6 +25,8 @@ def status_thread():
     global s_cmd_flag
     global manual_cmd
     global manual_response
+    global server_cmd
+    global server_response
     #req_status = send_cmd.send_cmd('QPIGS', hid)
     while 1:
         outfile = open('measurements.txt', 'a')
@@ -53,11 +56,13 @@ def status_thread():
         if m_cmd_flag is 1:
             manual_response = send_cmd.send_cmd(manual_cmd, hid)
             manual_cmd = ''
+            print manual_response
             m_cmd_flag = 0
 
         if s_cmd_flag is 1:
-            manual_response = send_cmd.send_cmd(manual_cmd, hid)
+            server_response = send_cmd.send_cmd(server_cmd, hid)
             server_cmd = ''
+            print server_response
             s_cmd_flag = 0
 
 #start status_thread as daemon to query inverter every 1 second
@@ -66,7 +71,7 @@ def manual_cmd_input():
     global m_cmd_flag
     global manual_cmd
     while 1:
-        if cmd_flag is 0:
+        if m_cmd_flag is 0:
             print ('What command would you like to run?')
             manual_cmd = raw_input()
             m_cmd_flag = 1
@@ -77,7 +82,8 @@ def server_cmd_input():
     client.client_connect()
     while 1:
         if s_cmd_flag is 0:
-            server_cmd = client.client()
+            utf_cmd = client.client()
+            server_cmd = utf_cmd.encode('ascii', 'ignore')
             s_cmd_flag = 1
 
 main_thread = threading.Thread(target = status_thread)
@@ -85,7 +91,6 @@ cmd_thread = threading.Thread(target = manual_cmd_input)
 server_thread = threading.Thread(target = server_cmd_input)
 main_thread.start()
 print 'Main thread started.'
-cmd_thread.start()
-print 'Secondary thread started.'
 server_thread.start()
 print 'Server thread started.'
+cmd_thread.start()
