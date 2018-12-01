@@ -11,9 +11,9 @@ b.pinMode(load2,'out');
 b.pinMode(load3,'out');
 b.pinMode(load4,'out');
 
-b.digitalWrite(load1,0);
-b.digitalWrite(load2,0);
-b.digitalWrite(load3,0);
-b.digitalWrite(load4,0);
+b.digitalWrite(load1,1);
+b.digitalWrite(load2,1);
+b.digitalWrite(load3,1);
+b.digitalWrite(load4,1);
 
 console.log('Relays initialized.');
